@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>রনি - প্রোফাইল</title>
+    <link href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/dist/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"/>
+    
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --wiki-border: #a2a9b1;
+            --wiki-bg: #f8f9fa;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Hind Siliguri', sans-serif;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Welcome Screen --- */
+        #welcome-screen {
+            height: 100vh;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: var(--bg-gradient);
+            color: white;
+            text-align: center;
+            position: fixed;
+            z-index: 1000;
+            transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+        }
+
+        .profile-img-frame {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            overflow: hidden;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .profile-img-frame img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .intro-btn {
+            background: white;
+            color: #764ba2;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            line-height: 1.5;
+        }
+
+        /* --- Audio Player Styles --- */
+        .audio-player-row {
+            display: flex;
+            align-items: center;
+            background: #000;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 4px;
+            gap: 10px;
+            width: 100%;
+            max-width: 350px;
+            height: 50px;
+            overflow: hidden;
+            box-sizing: border-box;
+        }
+
+        .player-left {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-right: 1px solid #333;
+            padding-right: 10px;
+        }
+
+        .play-pause-btn {
+            background: #fff;
+            color: #000;
+            border: none;
+            width: 32px;
+            height: 22px;
+            border-radius: 15px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+        }
+
+        .player-middle {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .seek-container {
+            width: 100%;
+            height: 2px;
+            background: #444;
+            position: relative;
+        }
+
+        .seek-bar {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            position: relative;
+        }
+
+        .seek-dot {
+            width: 8px;
+            height: 8px;
+            background: #fff;
+            border-radius: 50%;
+            position: absolute;
+            right: -4px;
+            top: -3px;
+        }
+
+        .time-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 9px;
+            color: #bbb;
+        }
+
+        .player-right {
+            background: #000;
+            height: 100%;
+            width: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: -10px;
+        }
+
+        .visualizer-mini {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 15px;
+        }
+
+        .v-bar {
+            width: 3px;
+            background: #2196F3;
+            height: 4px;
+        }
+
+        .v-bar.active {
+            animation: dj-bounce 0.5s ease-in-out infinite alternate;
+        }
+
+        @keyframes dj-bounce {
+            from { height: 4px; }
+            to { height: 16px; }
+        }
+
+        /* --- Main Content --- */
+        #main-content {
+            display: none;
+            padding: 40px 10px;
+            background-color: #f4f7f6;
+            min-height: 100vh;
+        }
+
+        .wiki-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border: 1px solid var(--wiki-border);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        h1 {
+            border-bottom: 1px solid var(--wiki-border);
+            padding-bottom: 10px;
+            color: #000;
+            font-size: 2.2rem;
+        }
+
+        p {
+            text-align: justify;
+            line-height: 1.8;
+            color: #333;
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .infobox {
+            float: right;
+            width: 320px;
+            border: 1px solid var(--wiki-border);
+            background: var(--wiki-bg);
+            margin-left: 20px;
+            margin-bottom: 20px;
+            padding: 5px;
+            font-size: 0.9rem;
+        }
+
+        .infobox-title {
+            text-align: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+            padding: 10px;
+            background: #eaecf0;
+        }
+
+        .infobox-img img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .infobox table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .infobox th, .infobox td {
+            padding: 8px;
+            text-align: left;
+            border-top: 1px solid #ced3d8;
+            vertical-align: middle;
+        }
+
+        .right-img {
+            width: 50px;
+            height: 50px;
+            border: 1px solid #ccc;
+            float: right;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .contact-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        /* --- Media Gallery & Video Grid --- */
+        .gallery-section {
+            margin-top: 30px;
+        }
+
+        .media-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .media-item {
+            background: #fff;
+            border: 1px solid #ddd;
+            padding: 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .media-item img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 2px;
+        }
+
+        .video-card {
+            background: #000;
+            aspect-ratio: 9/16;
+            border-radius: 8px;
+            overflow: hidden;
+            grid-column: span 1;
+        }
+
+        iframe, video {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .slide-up {
+            transform: translateY(-100vh);
+        }
+
+        @media (max-width: 600px) {
+            .infobox {
+                float: none;
+                width: 100%;
+                margin-left: 0;
+            }
+            .media-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="btn-click-sound">
+        <source src="faaa.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="welcome-screen">
+        <div class="profile-img-frame animate__animated animate__zoomIn">
+            <img src="জাউরা.png" alt="রনি">
+        </div>
+        <button class="intro-btn animate__animated animate__fadeInUp animate__delay-1s" onclick="showMainContent()">
+            আমি জাউরা রনি <br>
+            <span style="font-size: 0.9rem; font-weight: normal;">আমার জাউরামি দেখতে ক্লিক করুন</span>
+        </button>
+    </div>
+
+    <div id="main-content">
+        <div class="wiki-container">
+            <h1 class="reveal">জাউরা রনি (চোদনা)</h1>
+            
+            <p class="reveal">
+                <b>জাউরা রনি</b> একজন হিন্দুস্থানি দালাল এবং সেরা চাটুকার। এই মাঙ্গের নাতি ৫ই আগষ্ঠের পর থেকে পলাতক আছে এবং বর্তমানে ওরে ফেইসবুকে খাম্বার (যৌন দলের) পক্ষে চাটাচাটি করতে দেখা যায়। যদি ৫ই আগষ্টের আগে হাসু মাগীর (যৌন লীগের) পক্ষে চাটাচাটি করত। রবীউল ইসলাম রাকিবের শুক্রানু থেকে জন্মানো এই চোদনার সম্পর্কে নিচে বিস্তারিত জানুন।
+            </p>
+
+            <aside class="infobox">
+                <div class="infobox-title">ব্যক্তিগত পরিচিতি</div>
+                <div class="infobox-img">
+                    <img src="জাউরা ১.jpg" alt="Rony Profile">
+                </div>
+                <table>
+                    <tr><th>পূর্ণ নাম :</th><td>জাউরা রনি (খনিকের ছেলে)</td></tr>
+                    <tr><th>ডাক নাম :</th><td>চোদনা</td></tr>
+                    <tr><th>উপাধি :</th><td>সেরা চাটুকার ও হিন্দুস্থানী দালাল</td></tr>
+                    <tr>
+                        <th>পিতা :</th>
+                        <td>রবীউল ইসলাম রাকিব<img src="পিতা.jpg" class="right-img"></td>
+                    </tr>
+                    <tr>
+                        <th>মাতা :</th>
+                        <td>অজানা (যৌন কর্মী)</td>
+                    </tr>                   
+                    <tr><th>জন্মের কারন :</th><td>কন্ডম দূর্ঘটনা</td></tr>
+                    <tr><th>জন্মস্থান :</th><td>আবাসিক হোটেলে <img src="হোটেল.webp" class="right-img"></td></tr>
+                    <tr><th>লিঙ্গ :</th><td>৩য় লিঙ্গ / হিজরা</td></tr>
+                    <tr><th>পেশা :</th><td>গাঞ্জা খেয়ে চাটাচাটি করা</td></tr>
+                    <tr><th>বর্তমান অবস্থান :</th><td>পলাতক</td></tr>
+                    <tr><th>কর্মস্থান :</th><td>ফেইসবুক</td></tr>
+                    <tr><th>বর্তমান দল :</th><td>খাম্বার পা চাটা (যৌন দল) <img src="যৌনদল.png" class="right-img"></td></tr>
+                    <tr><th>পূর্ববর্তী দল :</th><td>হাসুর পা চাটা (যৌন লীগ)<img src="যৌনলীগ.png" class="right-img"></td></tr>
+                    <tr><th>রাষ্ট্রীয় সম্মাননা :</th><td>জুতার বারি ও ঝাটার বারি</td></tr>
+                    <tr>
+                        <th>দলীয় প্রতীক :</th>
+                        <td>কুত্তার দানা <img src="দানা.jpg" class="right-img" alt="Symbol"></td>
+                    </tr>
+                    <tr>
+                        <th>যোগাযোগ :</th>
+                        <td><a href="https://www.facebook.com/share/14HS58Vxoo7/" class="contact-link" target="_blank">যোগাযোগ করতে ক্লিক করুন</a></td>
+                    </tr>
+                    <tr>
+                        <th>আমার গান :</th>
+                        <td>
+                            <div class="audio-player-row">
+                                <div class="player-left">
+                                    <button class="play-pause-btn" onclick="toggleSong()">
+                                        <i class="bi bi-play-fill" id="play-icon"></i>
+                                    </button>
+                                </div>
+                                <div class="player-middle">
+                                    <div class="seek-container">
+                                        <div class="seek-bar" id="seek-bar">
+                                            <div class="seek-dot"></div>
+                                        </div>
+                                    </div>
+                                    <div class="time-row">
+                                        <span id="current-time">00:00</span>
+                                        <span id="duration-time">00:00</span>
+                                    </div>
+                                </div>
+                                <div class="player-right">
+                                    <div class="visualizer-mini">
+                                        <div class="v-bar"></div>
+                                        <div class="v-bar" style="animation-delay: 0.1s;"></div>
+                                        <div class="v-bar" style="animation-delay: 0.2s;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <audio id="song" ontimeupdate="updateAudioProgress()" onended="audioEnded()">
+                                <source src="সংগীত.mp3" type="audio/mpeg">
+                            </audio>
+                        </td>
+                    </tr>
+                    <tr><th>জাতীয়তা :</th><td>হিন্দুস্তানি<img src="হিন্দুস্তান.jpg" class="right-img"></td></tr>
+                </table>
+            </aside>
+
+            <h3 class="reveal">প্রাথমিক জীবন :</h3>
+            <p class="reveal">জাউরা রনি ইন্ডিয়ার একটি আবাসিক হোটেলে জন্মগ্রহণ করে৷ গোপন সূত্রে যানা যায় ওর মা ছিলো একজন যৌনকর্মী। ওর মায়ের সাথে রবীউল ইসলাম রাকিবের অবৈধ সম্পর্ক ছিলো। হঠাৎ একদিন ওর মায়ের যৌন উত্তজনা বেরে যায়, ফলে ওর মা রবীউল ইসলাম রাকিব কে একটা আবাসিক হোটেলে ঢেকে নিয়ে যায় এবং শারিরীক সম্পর্কে লীপ্ত হয়। সেখান থেকে জন্ম নেয় এই ৩য় লীঙ্গের হিজরা। জন্মের পরেরই তাকে পান করানো হয় গোমূত্র। তাই এলাকারর মানুষ ওকে চোদনা বলে ডাকত।</p>
+
+            <h3 class="reveal">কর্মজীবন :</h3>
+            <p class="reveal">ছোটবেলা থেকেই এই চোদনা চাটাচাটিতে দক্ষতা অর্জন করে এবং হাসু মাগির (যৌন লীগ) চাটাচাটি করে এবং ৫ই আগষ্টের পর দেশ ছেরে পালিয়ে যায়। বর্তমানে ওকে ফেইসবুকে খাম্বার (যৌন দল) পক্ষে চাটাচাটি করতে দেখা যায়। এবং পাশাপাশি ভারতের দালালি করে এবং এখান থেকেই ওর উপাধি হয় সেরা চাটুকার ও হিন্দুস্থানী দালাল।</p>
+            
+            <h3 class="reveal">সম্মাননা :</h3>
+            <p class="reveal">দল আর পাতি নেতাদের পা চাটাতে চাটতে এলাকার মানুষের কাছে সেরা চাটুকার হিসেবে পরিচিত লাভ করে যার ফলে জনগন এবং রাষ্ট্র খুশি হয়ে সম্মানী হিসেবে প্রচুর পরিমানে জুতার বারি এবং ঝাটার বারি খায়।  এবং সারাজীবন ভাতের দালালি করায়ভারতীয় দাদাবাবুদের কাছ থেকে কয়েকশত লিটার গোমূত্র উপহার পায়।</p>
+
+            <div class="gallery-section reveal">
+                <h3>জাউরামি (গ্যালারি ও ভিডিও)</h3>
+                <hr>
+                <div class="media-grid">
+                    <div class="media-item">
+                        <img src="বদল.jpg" alt="পিতা">
+              <div class="media-item">
+                        <img src="হিজরা.jpg" alt="পিতা">
+                    <div class="media-item">
+                        <img src="দাদা.jpg" alt="ছবি ১">
+                    </div>
+                    <div class="media-item">
+                        <img src="দাদা১.jpg" alt="ছবি ২">
+                    </div>
+
+                    
+                    <div class="video-card">
+                        <iframe src="গালি.mp4" allowfullscreen></iframe>
+                    </div>
+                    <div class="video-card">
+                        <iframe src="মদ.mp4" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div class="video-card">
+                        <iframe src="পতিতা.mp4" allowfullscreen></iframe>
+                    </div>
+                </div>
+            </div>
+
+            <footer style="margin-top: 50px; text-align: center; color: #888; font-size: 0.8rem;">
+                <hr>
+                <h2>তথ্যসূত্রে : আনোয়ার টিভি</h2
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        function showMainContent() {
+            const btnSound = document.getElementById('btn-click-sound');
+            btnSound.play();
+
+            const welcome = document.getElementById('welcome-screen');
+            const main = document.getElementById('main-content');
+            
+            welcome.classList.add('slide-up');
+            setTimeout(() => {
+                welcome.style.display = 'none';
+                main.style.display = 'block';
+                window.scrollTo(0, 0);
+                handleReveal();
+            }, 800);
+        }
+
+        const song = document.getElementById('song');
+        const playIcon = document.getElementById('play-icon');
+        const seekBar = document.getElementById('seek-bar');
+        const currentTimeText = document.getElementById('current-time');
+        const durationTimeText = document.getElementById('duration-time');
+        const vBars = document.querySelectorAll('.v-bar');
+
+        function toggleSong() {
+            if (song.paused) {
+                song.play();
+                playIcon.classList.replace('bi-play-fill', 'bi-pause-fill');
+                vBars.forEach(bar => bar.classList.add('active'));
+            } else {
+                song.pause();
+                playIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+                vBars.forEach(bar => bar.classList.remove('active'));
+            }
+        }
+
+        function updateAudioProgress() {
+            const percent = (song.currentTime / song.duration) * 100;
+            seekBar.style.width = percent + '%';
+            
+            currentTimeText.innerText = formatTime(song.currentTime);
+            if(song.duration) {
+                durationTimeText.innerText = formatTime(song.duration);
+            }
+        }
+
+        function formatTime(seconds) {
+            let min = Math.floor(seconds / 60);
+            let sec = Math.floor(seconds % 60);
+            return (min < 10 ? '0' + min : min) + ":" + (sec < 10 ? '0' + sec : sec);
+        }
+
+        function audioEnded() {
+            playIcon.classList.replace('bi-pause-fill', 'bi-play-fill');
+            seekBar.style.width = '0%';
+            vBars.forEach(bar => bar.classList.remove('active'));
+        }
+
+        function handleReveal() {
+            const reveals = document.querySelectorAll('.reveal');
+            for (let i = 0; i < reveals.length; i++) {
+                const windowHeight = window.innerHeight;
+                const elementTop = reveals[i].getBoundingClientRect().top;
+                const elementVisible = 100;
+                if (elementTop < windowHeight - elementVisible) {
+                    reveals[i].classList.add('active');
+                } else {
+                    reveals[i].classList.remove('active');
+                }
+            }
+        }
+
+        window.addEventListener('scroll', handleReveal);
+    </script>
+</body>
+</html>
